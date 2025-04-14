@@ -1,161 +1,78 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobilité étudiante</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 text-gray-800 font-sans">
+  <header class="bg-white shadow sticky top-0 z-50">
+    <nav class="max-w-5xl mx-auto flex justify-between items-center px-6 py-4 border-b border-blue-200">
+      <h1 class="text-2xl font-bold text-blue-800">PACE</h1>
+      <div class="space-x-6">
+        <a href="#accueil" class="text-blue-700 hover:underline">Accueil</a>
+        <a href="#bilan" class="text-blue-700 hover:underline">Bilan</a>
+        <a href="#a-propos" class="text-blue-700 hover:underline">Qui je suis</a>
+      </div>
+    </nav>
+  </header>
 
-const sectionContents = {
-  "3.1. Incitations au retour": `Plusieurs pays ont mis en place des incitations fiscales et professionnelles pour faire revenir leurs talents expatriés. L’Italie propose par exemple des réductions d’impôts à ceux qui reviennent. En France, de telles mesures pourraient attirer des diplômés expérimentés dans des secteurs comme l’intelligence artificielle ou la recherche. Des programmes de réintégration et de mise en relation avec des entreprises locales pourraient aussi améliorer l'attractivité du retour.`,
-
-  "3.2. Écosystème entrepreneurial": `Un environnement entrepreneurial attractif peut inciter les diplômés à rester ou à revenir. Certains pays comme Israël ou les États-Unis facilitent le financement et la création d’entreprise pour les jeunes talents. En France, malgré des progrès comme la French Tech, l'accès aux financements reste limité. La création d’un programme dédié aux jeunes entrepreneurs de retour avec des procédures simplifiées pourrait inverser la tendance.`,
-
-  "3.3. Coopérations universitaires internationales": `Renforcer les liens entre universités françaises et étrangères permettrait de garder le contact avec les étudiants partis. Le modèle allemand du DAAD ou les diplômes en co-tutelle offrent des moyens efficaces pour créer une continuité académique. En France, développer de tels partenariats, en lien avec les entreprises, pourrait valoriser le retour au pays et encourager les perspectives professionnelles post-mobilité.`,
-  "2.1. Influence sur le soft power": `La mobilité étudiante joue un rôle clé dans le rayonnement culturel et le soft power d’un pays. Elle permet de diffuser la langue, les valeurs et les modèles éducatifs. Cependant, lorsque les étudiants français s’intègrent à d’autres cultures éducatives, cela peut réduire l’influence intellectuelle de la France. Les élites formées à l’étranger adoptent parfois des logiques étrangères aux intérêts français. Cela peut affaiblir la position de la France sur la scène diplomatique ou économique si les anciens étudiants ne reviennent pas ou s’alignent sur d’autres modèles internationaux.`,
-
-  "2.2. Fuite des cerveaux et capital humain": `Une part importante des diplômés français ne revient pas après leurs études à l’étranger, surtout dans les domaines stratégiques comme la recherche, les technologies de pointe ou la médecine. Cela représente une perte directe d’investissement public dans l’éducation. Par exemple, de nombreux ingénieurs et chercheurs français formés dans des écoles prestigieuses sont recrutés par des entreprises comme Google ou Microsoft à l’étranger. La France ne bénéficie alors ni de leur savoir-faire ni de leur contribution économique.`,
-
-  "2.3. Réseaux professionnels et inégalités sociales": `L’expérience internationale offre un accès privilégié à des réseaux professionnels mondialisés. Cela crée un avantage pour les étudiants ayant étudié à l’étranger, renforçant parfois les inégalités sociales. Les frais élevés limitent l’accès à ces opportunités aux étudiants favorisés, malgré l’existence de bourses. Cela peut provoquer une concentration des postes à responsabilité au sein d’une élite ayant eu les moyens de partir. Pour corriger cela, un soutien accru et des programmes de mentorat pourraient favoriser une mobilité plus équitable.`,
-  "1.1. Coût monétaire de la mobilité": `Le coût monétaire est la première considération qui vient à l’esprit quand on pense au poids économique de la mobilité étudiante en France. L'état français finance cette mobilité à travers des dispositifs de bourses et d'aides à la mobilité internationale. En contrepartie, les étudiants français emportent avec eux des ressources nationales qui ne bénéficient plus directement à l'économie française. Par exemple, selon Campus France, l'État français a dépensé plus de 250 millions d'euros en aides à la mobilité étudiante.
-
-Les frais de scolarité à l’étranger sont souvent plus élevés, transférant une part du pouvoir d’achat français vers l’étranger. Ce déséquilibre s’accompagne d’une réalité contrastée : alors que la France accueille aussi des étudiants internationaux, les recettes engendrées ne compensent pas toujours la perte économique nette des talents français.`,
-
-  "1.2. Impact sectoriel de la mobilité sortante": `Certains secteurs, comme la médecine, l’ingénierie ou la recherche scientifique, sont plus touchés par la fuite des talents. Les opportunités à l'étranger sont plus attractives, en termes de conditions de travail et de rémunération. Par exemple, un stagiaire au Québec peut gagner jusqu’à 2000 euros par mois, alors qu’un équivalent français perçoit deux fois moins. Cette perte de talents contribue au déficit de compétences et nuit à l’innovation nationale.
-
-Les entreprises françaises, notamment dans les hautes technologies, doivent alors recruter à l'étranger pour compenser. Ce phénomène empêche une montée en gamme de l’économie française et crée un cercle vicieux entre départs de diplômés et faible attractivité locale.`,
-
-  "1.3. Stratégies internationales et concurrence universitaire": `Des pays comme le Canada, l’Allemagne ou l’Australie ont mis en place des stratégies très efficaces pour retenir les diplômés étrangers. Le Canada permet aux étudiants de rester facilement avec des visas de travail. L’Allemagne cible les secteurs en tension pour proposer des parcours d’intégration aux diplômés étrangers.
-
-À l’inverse, la France manque d’une politique claire de retour. L’accord entre les IUT français et l’ETS de Montréal illustre ce paradoxe : la France finance une mobilité d’un an au Québec, avec un risque de non-retour des techniciens formés. Cette absence de stratégie cohérente met en péril les intérêts à long terme de la nation.`
-};
-
-const sections = [
-  {
-    title: "Impact économique de la mobilité sortante",
-    id: "impact-economique",
-    parts: Object.keys(sectionContents)
-  },
-  {
-    title: "Conséquences immatérielles de la mobilité étudiante",
-    id: "immatériel",
-    parts: [
-      "2.1. Influence sur le soft power",
-      "2.2. Fuite des cerveaux et capital humain",
-      "2.3. Réseaux professionnels et inégalités sociales"
-    ]
-  },
-  {
-    title: "Stratégies d’adaptation et politiques de rétention",
-    id: "rétention",
-    parts: [
-      "3.1. Incitations au retour",
-      "3.2. Écosystème entrepreneurial",
-      "3.3. Coopérations universitaires internationales"
-    ]
-  }
-];
-
-export default function Home() {
-  const [currentSection, setCurrentSection] = useState(null);
-  const [currentPart, setCurrentPart] = useState(0);
-
-  const renderIntro = () => (
-    <div className="text-center p-10 bg-gradient-to-b from-blue-50 via-white to-blue-100 rounded-xl shadow-md">
-      <h1 className="text-4xl font-extrabold mb-6 text-blue-800">Mobilité étudiante : un poids pour le pays ?</h1>
-      <p className="mb-10 max-w-3xl mx-auto text-gray-700">
-        La France encourage ses étudiants à partir étudier à l'étranger. Si cette mobilité offre de
-        nombreuses opportunités, elle engendre aussi des coûts pour la société. Le site propose une
-        analyse des enjeux économiques, immatériels et politiques liés à ce phénomène.
+  <main id="accueil" class="max-w-5xl mx-auto p-6">
+    <section class="text-center p-10 bg-gradient-to-b from-blue-50 via-white to-blue-100 rounded-xl shadow mb-10">
+      <h2 class="text-4xl font-extrabold text-blue-800 mb-6">Mobilité étudiante : un poids pour le pays ?</h2>
+      <p class="max-w-3xl mx-auto mb-10">
+        La France encourage ses étudiants à partir étudier à l'étranger. Si cette mobilité offre de nombreuses opportunités, elle engendre aussi des coûts pour la société. Ce site propose une analyse des enjeux économiques, immatériels et politiques liés à ce phénomène.
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        {sections.map((s, i) => (
-          <Card key={s.id} onClick={() => { setCurrentSection(i); setCurrentPart(0); }} className="cursor-pointer bg-white border-blue-200 hover:shadow-xl transition duration-300">
-            <CardContent className="p-6 text-center">
-              <h2 className="text-xl font-semibold text-blue-700">{s.title}</h2>
-            </CardContent>
-          </Card>
-        ))}
+    </section>
+
+    <section class="space-y-10">
+      <div id="impact-economique" class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-2xl font-bold text-blue-700 mb-4">Impact économique de la mobilité sortante</h3>
+        <h4 class="font-semibold text-lg mb-2">1.1. Coût monétaire de la mobilité</h4>
+        <p>Le coût monétaire est la première considération qui vient à l’esprit [...]</p>
+
+        <h4 class="font-semibold text-lg mt-4 mb-2">1.2. Impact sectoriel de la mobilité sortante</h4>
+        <p>Certains secteurs, comme la médecine, l’ingénierie ou la recherche scientifique [...]</p>
+
+        <h4 class="font-semibold text-lg mt-4 mb-2">1.3. Stratégies internationales et concurrence universitaire</h4>
+        <p>Des pays comme le Canada, l’Allemagne ou l’Australie ont mis en place [...]</p>
       </div>
-    </div>
-  );
 
-  const renderSection = () => {
-  if (currentSection === -2) {
-    return (
-      <div className="p-10 bg-white shadow-lg rounded-xl mt-6">
-        <div className="text-sm text-blue-400 mb-2 uppercase tracking-wider">Qui je suis</div>
-        <h2 className="text-3xl font-bold mb-6 text-blue-800">À propos de moi</h2>
-        <p className="mb-8 text-gray-700 leading-relaxed whitespace-pre-line">
-          Je suis un étudiant engagé dans les questions d'éducation et de politiques publiques liées à la mobilité internationale. Mon intérêt pour le sujet est né d'une expérience personnelle de mobilité étudiante qui m'a fait réfléchir aux conséquences de ces départs sur notre société et notre économie. 
+      <div id="immatériel" class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-2xl font-bold text-blue-700 mb-4">Conséquences immatérielles de la mobilité étudiante</h3>
+        <h4 class="font-semibold text-lg mb-2">2.1. Influence sur le soft power</h4>
+        <p>La mobilité étudiante joue un rôle clé dans le rayonnement culturel [...]</p>
 
-          Ce site est le fruit d’un travail de recherche et de synthèse visant à éclairer les enjeux souvent invisibles de la mobilité sortante. En tant qu’élève-ingénieur à Télécom Paris, je souhaite que ce projet contribue à une meilleure prise en compte des impacts à long terme des mobilités étudiantes et à une réflexion collective sur les stratégies à mettre en place.
-        </p>
-        <div className="text-right">
-          <Button onClick={() => setCurrentSection(null)}>Retour à l’accueil</Button>
-        </div>
+        <h4 class="font-semibold text-lg mt-4 mb-2">2.2. Fuite des cerveaux et capital humain</h4>
+        <p>Une part importante des diplômés français ne revient pas après leurs études [...]</p>
+
+        <h4 class="font-semibold text-lg mt-4 mb-2">2.3. Réseaux professionnels et inégalités sociales</h4>
+        <p>L’expérience internationale offre un accès privilégié à des réseaux professionnels [...]</p>
       </div>
-    );
-  }
-  if (currentSection === -1) {
-    return (
-      <div className="p-10 bg-white shadow-lg rounded-xl mt-6">
-        <div className="text-sm text-blue-400 mb-2 uppercase tracking-wider">Bilan</div>
-        <h2 className="text-3xl font-bold mb-6 text-blue-800">Synthèse</h2>
-        <p className="mb-8 text-gray-700 leading-relaxed whitespace-pre-line">
-          La mobilité étudiante est aujourd’hui au cœur d’une véritable compétition mondiale visant à attirer les talents. Si elle constitue une opportunité individuelle enrichissante, elle représente aussi un défi pour les pays formateurs comme la France. En effet, les départs non compensés par des retours impliquent une perte de capital humain, un coût économique, et parfois une fragilisation des secteurs stratégiques.
 
-          Toutefois, cette mobilité peut devenir un levier stratégique si elle est mieux encadrée. La France dispose de nombreux atouts : rayonnement académique, qualité de l’enseignement, ouverture culturelle. Encore faut-il bâtir des politiques publiques plus cohérentes pour favoriser le retour, la valorisation, et la connexion des talents français expatriés.
+      <div id="rétention" class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-2xl font-bold text-blue-700 mb-4">Stratégies d’adaptation et politiques de rétention</h3>
+        <h4 class="font-semibold text-lg mb-2">3.1. Incitations au retour</h4>
+        <p>Plusieurs pays ont mis en place des incitations fiscales et professionnelles [...]</p>
 
-          Pour cela, trois axes d’action s’imposent : des incitations fiscales et professionnelles au retour, un écosystème entrepreneurial solide, et des coopérations universitaires renforcées. Il s’agit de ne pas subir la mondialisation académique mais de la transformer en opportunité nationale.
-        </p>
-        <div className="text-right">
-          <Button onClick={() => setCurrentSection(null)}>Retour à l’accueil</Button>
-        </div>
+        <h4 class="font-semibold text-lg mt-4 mb-2">3.2. Écosystème entrepreneurial</h4>
+        <p>Un environnement entrepreneurial attractif peut inciter les diplômés à rester [...]</p>
+
+        <h4 class="font-semibold text-lg mt-4 mb-2">3.3. Coopérations universitaires internationales</h4>
+        <p>Renforcer les liens entre universités françaises et étrangères permettrait [...]</p>
       </div>
-    );
-  }
+    </section>
 
-  const section = sections[currentSection];
-  const part = section.parts[currentPart];
-  const content = sectionContents[part] || "[Contenu en cours de rédaction.]";
+    <section id="bilan" class="bg-white mt-10 p-6 rounded-xl shadow">
+      <h3 class="text-2xl font-bold text-blue-800 mb-4">Synthèse</h3>
+      <p>La mobilité étudiante est aujourd’hui au cœur d’une véritable compétition mondiale visant à attirer les talents. [...]</p>
+    </section>
 
-  return (
-    <div className="p-10 bg-white shadow-lg rounded-xl mt-6">
-      <div className="text-sm text-blue-400 mb-2 uppercase tracking-wider">{section.title}</div>
-      <h2 className="text-3xl font-bold mb-6 text-blue-800">{part}</h2>
-      <p className="mb-8 text-gray-700 leading-relaxed whitespace-pre-line">{content}</p>
-      <div className="flex justify-between">
-        <Button onClick={() => setCurrentPart((p) => Math.max(0, p - 1))} disabled={currentPart === 0}>
-          Précédent
-        </Button>
-        <Button onClick={() => {
-          if (currentPart < section.parts.length - 1) setCurrentPart(currentPart + 1);
-          else setCurrentSection(null);
-        }}>
-          {currentPart < section.parts.length - 1 ? <ArrowRight className="ml-2 h-4 w-4" /> : "Retour à l’accueil"}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-  return (
-    <main className="max-w-5xl mx-auto bg-blue-50 min-h-screen">
-      <nav className="flex justify-between p-6 border-b border-blue-200 bg-white shadow-sm sticky top-0 z-50">
-        <div className="font-bold text-2xl text-blue-800">PACE</div>
-        <div className="space-x-6">
-          <Button variant="link" onClick={() => setCurrentSection(null)} className="text-blue-700">Accueil</Button>
-          <Button variant="link" className="text-blue-700" onClick={() => {
-  setCurrentSection(-1);
-  setCurrentPart(0);
-}}>Bilan</Button>
-          <Button variant="link" className="text-blue-700" onClick={() => {
-  setCurrentSection(-2);
-  setCurrentPart(0);
-}}>Qui je suis</Button>
-        </div>
-      </nav>
-      <div className="p-4">
-        {currentSection === null ? renderIntro() : renderSection()}
-      </div>
-    </main>
-  );
-}
+    <section id="a-propos" class="bg-white mt-10 p-6 rounded-xl shadow">
+      <h3 class="text-2xl font-bold text-blue-800 mb-4">À propos de moi</h3>
+      <p>Je suis un étudiant engagé dans les questions d'éducation et de politiques publiques liées à la mobilité internationale. [...]</p>
+    </section>
+  </main>
+</body>
+</html>
